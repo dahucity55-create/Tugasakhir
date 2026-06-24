@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Toko Elektronik</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f0f0;
+      min-height: 100vh;
+    }
+
+    /* HEADER BIRU */
+    .header {
+      background: #5b7fa6;
+      color: white;
+      text-align: center;
+      padding: 30px 20px;
+    }
+    .header h1 {
+      font-size: 26px;
+      font-weight: bold;
+      margin-bottom: 6px;
+    }
+    .header p {
+      font-size: 13px;
+      opacity: 0.85;
+    }
+
+    /* KONTEN TENGAH */
+    .container {
+      max-width: 600px;
+      margin: 30px auto;
+      padding: 0 16px 40px;
+    }
+
+    /* CARD FORM */
+    .card {
+      background: #ffffff;
+      border-radius: 8px;
+      padding: 28px 30px;
+      margin-bottom: 20px;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.1);
+    }
+    .card h2 {
+      text-align: center;
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 22px;
+      color: #222;
+    }
+
+    /* FORM FIELDS */
+    .form-group {
+      margin-bottom: 16px;
+    }
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 5px;
+    }
+    input {
+      width: 100%;
+      padding: 8px 10px;
+      font-size: 14px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      outline: none;
+    }
+    input:focus {
+      border-color: #5b7fa6;
+    }
+    input.error {
+      border-color: #cc0000;
+    }
+    .err-msg {
+      font-size: 11px;
+      color: #cc0000;
+      margin-top: 3px;
+      min-height: 15px;
+    }
+
+    /* TOMBOL */
+    .btn-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    .btn {
+      padding: 9px 24px;
+      font-size: 14px;
+      font-weight: bold;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .btn-hitung {
+      background: #4caf50;
+      color: white;
+    }
+    .btn-hitung:hover { background: #43a047; }
+    .btn-reset {
+      background: #e53935;
+      color: white;
+    }
+    .btn-reset:hover { background: #c62828; }
+
+    /* CARD HASIL */
+    .card-hasil {
+      display: none;
+      background: #f9f9f9;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 22px 26px;
+    }
+    .card-hasil.show { display: block; }
+    .card-hasil h3 {
+      font-size: 16px;
+      font-weight: bold;
+      margin-bottom: 14px;
+      color: #222;
+    }
+
+    /* TABEL HASIL */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+    table td {
+      padding: 7px 4px;
+      border-bottom: 1px solid #e8e8e8;
+      color: #333;
+    }
+    table td:first-child {
+      font-weight: bold;
+      width: 45%;
+      color: #444;
+    }
+    table tr:last-child td { border-bottom: none; }
+
+    /* Baris bonus */
+    .row-bonus td { color: #e65100; }
+    /* Baris total bayar */
+    .row-total td {
+      font-weight: bold;
+      font-size: 15px;
+      color: #1b5e20;
+      padding-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <div class="header">
+    <h1>Selamat Datang di Toko Elektronik</h1>
+    <p>Belanja lebih mudah dan menyenangkan bersama kami.</p>
+  </div>
+
+  <div class="container">
+
+    <!-- FORM CARD -->
+    <div class="card">
+      <h2>Form Transaksi</h2>
+
+      <div class="form-group">
+        <label for="nama">Nama Pelanggan</label>
+        <input type="text" id="nama" placeholder="Masukkan nama pelanggan" />
+        <div class="err-msg" id="err-nama"></div>
+      </div>
+
+      <div class="form-group">
+        <label for="produk">Nama Produk</label>
+        <input type="text" id="produk" placeholder="Masukkan nama produk" />
+        <div class="err-msg" id="err-produk"></div>
+      </div>
+
+      <div class="form-group">
+        <label for="harga">Harga Produk</label>
+        <input type="number" id="harga" placeholder="Contoh: 2900000" min="0" />
+        <div class="err-msg" id="err-harga"></div>
+      </div>
+
+      <div class="form-group">
+        <label for="jumlah">Jumlah Pembelian</label>
+        <input type="number" id="jumlah" placeholder="Contoh: 3" min="1" />
+        <div class="err-msg" id="err-jumlah"></div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-hitung" onclick="hitung()">Hitung</button>
+        <button class="btn btn-reset" onclick="resetForm()">Reset</button>
+      </div>
+    </div>
+
+    <!-- HASIL -->
+    <div class="card-hasil" id="hasil">
+      <h3>Hasil Perhitungan</h3>
+      <table>
+        <tr>
+          <td>Nama Pelanggan</td>
+          <td id="r-nama">—</td>
+        </tr>
+        <tr>
+          <td>Nama Produk</td>
+          <td id="r-produk">—</td>
+        </tr>
+        <tr>
+          <td>Total Belanja</td>
+          <td id="r-total">—</td>
+        </tr>
+        <tr id="row-potongan">
+          <td>Potongan</td>
+          <td id="r-potongan">—</td>
+        </tr>
+        <tr class="row-total">
+          <td>Total Bayar</td>
+          <td id="r-bayar">—</td>
+        </tr>
+      </table>
+    </div>
+
+  </div><!-- /container -->
+
+  <script>
+    function fmt(n) {
+      return 'Rp ' + n.toLocaleString('id-ID');
+    }
+
+    function clearErrors() {
+      ['nama','produk','harga','jumlah'].forEach(function(id) {
+        document.getElementById('err-' + id).textContent = '';
+        document.getElementById(id).classList.remove('error');
+      });
+    }
+
+    function setError(id, msg) {
+      document.getElementById('err-' + id).textContent = msg;
+      document.getElementById(id).classList.add('error');
+    }
+
+    function hitung() {
+      clearErrors();
+
+      var nama   = document.getElementById('nama').value.trim();
+      var produk = document.getElementById('produk').value.trim();
+      var harga  = document.getElementById('harga').value.trim();
+      var jumlah = document.getElementById('jumlah').value.trim();
+      var ok = true;
+
+      if (!nama)   { setError('nama',   'Nama pelanggan wajib diisi.'); ok = false; }
+      if (!produk) { setError('produk', 'Nama produk wajib diisi.'); ok = false; }
+      if (!harga)  { setError('harga',  'Harga produk wajib diisi.'); ok = false; }
+      else if (isNaN(harga) || Number(harga) <= 0) {
+        setError('harga', 'Harga harus berupa angka positif.'); ok = false;
+      }
+      if (!jumlah) { setError('jumlah', 'Jumlah pembelian wajib diisi.'); ok = false; }
+      else if (isNaN(jumlah) || !Number.isInteger(Number(jumlah)) || Number(jumlah) < 1) {
+        setError('jumlah', 'Jumlah harus bilangan bulat minimal 1.'); ok = false;
+      }
+
+      if (!ok) return;
+
+      var h = parseFloat(harga);
+      var j = parseInt(jumlah);
+      var totalBelanja = h * j;
+      var potongan     = totalBelanja >= 400000 ? 50000 : 0;
+      var totalBayar   = totalBelanja - potongan;
+
+      document.getElementById('r-nama').textContent    = nama;
+      document.getElementById('r-produk').textContent  = produk;
+      document.getElementById('r-total').textContent   = fmt(totalBelanja);
+      document.getElementById('r-bayar').textContent   = fmt(totalBayar);
+
+      var rowP = document.getElementById('row-potongan');
+      var rP   = document.getElementById('r-potongan');
+      if (potongan > 0) {
+        rowP.className = 'row-bonus';
+        rP.textContent = fmt(potongan);
+      } else {
+        rowP.className = '';
+        rP.textContent = 'Tidak ada potongan';
+      }
+
+      document.getElementById('hasil').classList.add('show');
+    }
+
+    function resetForm() {
+      ['nama','produk','harga','jumlah'].forEach(function(id) {
+        document.getElementById(id).value = '';
+        document.getElementById(id).classList.remove('error');
+        document.getElementById('err-' + id).textContent = '';
+      });
+      document.getElementById('hasil').classList.remove('show');
+    }
+  </script>
+</body>
+</html>
